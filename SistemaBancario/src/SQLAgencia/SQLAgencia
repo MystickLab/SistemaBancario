@@ -1,0 +1,289 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 02-Out-2024 às 00:36
+-- Versão do servidor: 10.4.25-MariaDB
+-- versão do PHP: 8.1.10
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `sistemaagencia`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `agencia`
+--
+
+CREATE TABLE `agencia` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `banco_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `agencia`
+--
+
+INSERT INTO `agencia` (`id`, `nome`, `banco_id`) VALUES
+(1, 'Agência Central', 1),
+(2, 'Agência Sul', 1),
+(3, 'Agência Leste', 2),
+(4, 'Agência Norte', 3),
+(5, 'Agência Oeste', 4),
+(6, 'Agência Metropolitana', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `atendente`
+--
+
+CREATE TABLE `atendente` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `agencia_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `atendente`
+--
+
+INSERT INTO `atendente` (`id`, `nome`, `agencia_id`) VALUES
+(1, 'Carlos Silva', 1),
+(2, 'Maria Oliveira', 1),
+(3, 'João Souza', 2),
+(4, 'Ana Santos', 2),
+(5, 'Pedro Ferreira', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `banco`
+--
+
+CREATE TABLE `banco` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `banco`
+--
+
+INSERT INTO `banco` (`id`, `nome`) VALUES
+(1, 'Banco do Brasil'),
+(2, 'Itaú'),
+(3, 'Bradesco'),
+(4, 'Santander'),
+(5, 'Caixa Econômica Federal');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `cliente`
+--
+
+CREATE TABLE `cliente` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `cpf` varchar(11) NOT NULL,
+  `telefone` varchar(15) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `senha` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `cliente`
+--
+
+INSERT INTO `cliente` (`id`, `nome`, `cpf`, `telefone`, `email`, `senha`) VALUES
+(1, 'Carlos Silva', '12345678901', '11987654321', 'carlos.silva@example.com', 'senha123'),
+(2, 'Maria Oliveira', '98765432100', '11912345678', 'maria.oliveira@example.com', 'senha456'),
+(3, 'João Santos', '11122233344', '11876543210', 'joao.santos@example.com', 'senha789'),
+(4, 'Ana Costa', '22233344455', '11765432109', 'ana.costa@example.com', 'senha321'),
+(5, 'Pedro Lima', '33344455566', '11654321098', 'pedro.lima@example.com', 'senha654');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `conta`
+--
+
+CREATE TABLE `conta` (
+  `id` int(11) NOT NULL,
+  `numero` varchar(20) NOT NULL,
+  `tipo` enum('corrente','poupanca') NOT NULL,
+  `saldo` decimal(10,2) DEFAULT 0.00,
+  `agencia_id` int(11) DEFAULT NULL,
+  `cliente_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `conta`
+--
+
+INSERT INTO `conta` (`id`, `numero`, `tipo`, `saldo`, `agencia_id`, `cliente_id`) VALUES
+(1, '0001-0', 'corrente', '504500.00', 1, 1),
+(2, '0002-1', 'poupanca', '2500.50', 2, 2),
+(3, '0003-2', 'corrente', '500.75', 3, 3),
+(4, '0004-3', 'poupanca', '1000.00', 4, 4),
+(5, '0005-4', 'corrente', '300.25', 5, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `transacao`
+--
+
+CREATE TABLE `transacao` (
+  `id` int(11) NOT NULL,
+  `tipo` enum('deposito','saque','transferencia') NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `data` datetime DEFAULT current_timestamp(),
+  `conta_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `transacao`
+--
+
+INSERT INTO `transacao` (`id`, `tipo`, `valor`, `data`, `conta_id`) VALUES
+(1, 'deposito', '500.00', '2024-09-30 20:12:15', 1),
+(2, 'saque', '200.00', '2024-09-30 20:12:15', 1),
+(3, 'transferencia', '100.00', '2024-09-30 20:12:15', 2),
+(4, 'deposito', '300.00', '2024-09-30 20:12:15', 3),
+(5, 'saque', '150.00', '2024-09-30 20:12:15', 4);
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices para tabela `agencia`
+--
+ALTER TABLE `agencia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `banco_id` (`banco_id`);
+
+--
+-- Índices para tabela `atendente`
+--
+ALTER TABLE `atendente`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `agencia_id` (`agencia_id`);
+
+--
+-- Índices para tabela `banco`
+--
+ALTER TABLE `banco`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices para tabela `cliente`
+--
+ALTER TABLE `cliente`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `cpf` (`cpf`);
+
+--
+-- Índices para tabela `conta`
+--
+ALTER TABLE `conta`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `numero` (`numero`),
+  ADD KEY `agencia_id` (`agencia_id`),
+  ADD KEY `cliente_id` (`cliente_id`);
+
+--
+-- Índices para tabela `transacao`
+--
+ALTER TABLE `transacao`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `conta_id` (`conta_id`);
+
+--
+-- AUTO_INCREMENT de tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `agencia`
+--
+ALTER TABLE `agencia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `atendente`
+--
+ALTER TABLE `atendente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `banco`
+--
+ALTER TABLE `banco`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `cliente`
+--
+ALTER TABLE `cliente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `conta`
+--
+ALTER TABLE `conta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `transacao`
+--
+ALTER TABLE `transacao`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Restrições para despejos de tabelas
+--
+
+--
+-- Limitadores para a tabela `agencia`
+--
+ALTER TABLE `agencia`
+  ADD CONSTRAINT `agencia_ibfk_1` FOREIGN KEY (`banco_id`) REFERENCES `banco` (`id`);
+
+--
+-- Limitadores para a tabela `atendente`
+--
+ALTER TABLE `atendente`
+  ADD CONSTRAINT `atendente_ibfk_1` FOREIGN KEY (`agencia_id`) REFERENCES `agencia` (`id`) ON DELETE CASCADE;
+
+--
+-- Limitadores para a tabela `conta`
+--
+ALTER TABLE `conta`
+  ADD CONSTRAINT `conta_ibfk_1` FOREIGN KEY (`agencia_id`) REFERENCES `agencia` (`id`),
+  ADD CONSTRAINT `conta_ibfk_2` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`);
+
+--
+-- Limitadores para a tabela `transacao`
+--
+ALTER TABLE `transacao`
+  ADD CONSTRAINT `transacao_ibfk_1` FOREIGN KEY (`conta_id`) REFERENCES `conta` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
